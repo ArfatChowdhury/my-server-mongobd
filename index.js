@@ -21,9 +21,18 @@ const client = new MongoClient(uri, {
     try {
       // Connect the client to the server	(optional starting in v4.7)
       await client.connect();
+
+      app.post('/users', (req, res)=>{
+        console.log('data in the server', req.body);
+      })
+
+
+
+
+
       // Send a ping to confirm a successful connection
       await client.db("admin").command({ ping: 1 });
-      console.log("Pinged your deployment. You successfully connected to MongoDB!");
+      console.log("Pinged your deployment. You successfully connected toMongoDB!");
     } catch(error){
         console.log(error);
     }
@@ -34,6 +43,10 @@ const client = new MongoClient(uri, {
 app.use(cors())
 app.use(express.json())
 
+// app.post('/users', (req, res) => {
+//   console.log('✅ Data received in server:', req.body);
+//   res.send('Data received successfully!');
+// });
 
 app.get('/',(req, res) =>{
     res.send('hello')
