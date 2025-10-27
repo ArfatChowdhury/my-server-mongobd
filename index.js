@@ -2,7 +2,7 @@ const express = require('express');
 const app = express()
 const port = process.env.PORT || 3000;
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 // 74F3NyDVF9YvWY8J
@@ -22,11 +22,31 @@ const client = new MongoClient(uri, {
       // Connect the client to the server	(optional starting in v4.7)
       await client.connect();
 
-      app.post('/users', (req, res)=>{
-        console.log('data in the server', req.body);
+      const usersCollection = client.db('usersdb').collection('users')
+      
+      app.get('/users', async(req,res)=>{
+        const cursor = usersCollection.find()
+        const result = await cursor.toArray()
+        res.send(result)
       })
 
 
+      app.post('/users', async(req,res)=>{
+        const newUser = req.body;
+        const result = await usersCollection.insertOne(newUser);
+        res.send(result)
+      })
+
+      app.delete('/users/:id',async(req, res)=>{
+        // console.log(req.params);
+        const id = req.params.id
+        const query = {_id: new ObjectId(id)}
+        const result = await usersCollection.deleteOne(query)
+        res.send(result)
+        // console.log('id to be deleted', query);
+        
+        
+      })
 
 
 
